@@ -247,10 +247,18 @@ img.emoji {
 .animate-fade-up { animation: fade-up 0.7s ease forwards; }
 .dot-pulse { animation: pulse-dot 2s ease-in-out infinite; }
 
-/* ─── HERO BACKGROUND ────────────────────────────────── */
+/* ─── HERO BACKGROUND — neutro e sofisticado ─────────── */
 .hero-bg {
   background:
-    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(180,30,0,0.12) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 20% 80%, rgba(100,10,0,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 90% 55% at 50% -10%, rgba(255,255,255,0.04) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 40% at 80% 60%,  rgba(255,255,255,0.02) 0%, transparent 60%),
     #090909;
+}
+
+/* ─── MOBILE UTILITIES ───────────────────────────────── */
+@media (max-width: 640px) {
+  .hero-headline { font-size: clamp(2.8rem, 11vw, 4.5rem) !important; }
+  .hero-sub      { font-size: clamp(1.5rem, 7vw, 2.2rem)  !important; }
+  .section-pad   { padding-top: 4rem; padding-bottom: 4rem; }
+  .counter-num   { font-size: clamp(2rem, 8vw, 3rem) !important; }
 }
