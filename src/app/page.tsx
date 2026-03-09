@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useRef } from 'react'
 import Link from 'next/link'
+import { FlagFire } from '@/components/FlagFire'
 
 /* ─── Contador animado ──────────────────────────────── */
 function Counter({ value, prefix = '', decimals = 0 }: { value: number; prefix?: string; decimals?: number }) {
@@ -131,36 +132,8 @@ export default function Page() {
       {/* ── HERO ─────────────────────────────────────── */}
       <section className="relative pt-20 pb-24 px-6 overflow-hidden">
 
-        {/* ── BANDEIRA DO BRASIL EM CHAMAS ── */}
-        <div className="flag-bg">
-          {/* Bandeira centralizada */}
-          <div className="flag-layer" style={{ opacity: 0.18 }}>
-            <div className="relative w-full h-full max-w-5xl mx-auto" style={{ aspectRatio: '20/14' }}>
-              <div className="flag-green absolute inset-0" />
-              <div className="flag-layer">
-                <div className="flag-yellow" />
-              </div>
-              <div className="flag-layer">
-                <div className="flag-blue" />
-              </div>
-            </div>
-          </div>
-
-          {/* Fogo */}
-          <div className="flag-fire" />
-          <div className="flag-fire2" />
-
-          {/* Brasas */}
-          <div className="ember" style={{ left: '15%' }} />
-          <div className="ember" />
-          <div className="ember" />
-          <div className="ember" />
-          <div className="ember" />
-          <div className="ember" />
-
-          {/* Vinheta para legibilidade do texto */}
-          <div className="flag-vignette" />
-        </div>
+        {/* ── BANDEIRA EM CHAMAS FOTORREALISTA ── */}
+        <FlagFire />
 
         <div className="relative z-10 max-w-5xl mx-auto text-center">
 

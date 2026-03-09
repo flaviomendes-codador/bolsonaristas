@@ -178,7 +178,7 @@ img.emoji {
   object-fit: contain;
 }
 
-/* ── BANDEIRA EM CHAMAS ──────────────────────────────── */
+/* ── BANDEIRA EM CHAMAS — REALISTA ───────────────────── */
 @keyframes fire1 {
   0%,100% { transform: scaleY(1)   scaleX(1);    opacity: 0.9; }
   20%      { transform: scaleY(1.04) scaleX(0.98); opacity: 1;   }
