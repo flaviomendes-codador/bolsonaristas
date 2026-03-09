@@ -168,3 +168,135 @@ body {
   user-select: none;
   pointer-events: none;
 }
+
+/* ── TWEMOJI ─────────────────────────────────────────── */
+img.emoji {
+  height: 1.1em;
+  width: 1.1em;
+  vertical-align: -0.15em;
+  display: inline-block;
+  object-fit: contain;
+}
+
+/* ── BANDEIRA EM CHAMAS ──────────────────────────────── */
+@keyframes fire1 {
+  0%,100% { transform: scaleY(1)   scaleX(1);    opacity: 0.9; }
+  20%      { transform: scaleY(1.04) scaleX(0.98); opacity: 1;   }
+  40%      { transform: scaleY(0.97) scaleX(1.02); opacity: 0.95;}
+  70%      { transform: scaleY(1.02) scaleX(0.99); opacity: 1;   }
+}
+@keyframes fire2 {
+  0%,100% { transform: skewX(0deg)  translateY(0);   opacity: 0.8; }
+  30%     { transform: skewX(-1deg) translateY(-3px); opacity: 1;   }
+  60%     { transform: skewX(1deg)  translateY(2px);  opacity: 0.85;}
+}
+@keyframes ember {
+  0%   { transform: translateY(0) translateX(0) scale(1);       opacity: 0.9; }
+  50%  { transform: translateY(-90px) translateX(12px) scale(0.6); opacity: 0.5; }
+  100% { transform: translateY(-180px) translateX(-8px) scale(0);  opacity: 0;   }
+}
+@keyframes smoke {
+  0%   { transform: translateY(0) scale(1);     opacity: 0.3; }
+  100% { transform: translateY(-120px) scale(3); opacity: 0;  }
+}
+
+.flag-bg {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.flag-layer {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Fundo verde da bandeira */
+.flag-green {
+  position: absolute;
+  inset: 0;
+  background: #005B2F;
+}
+
+/* Losango amarelo */
+.flag-yellow {
+  width: 68%;
+  height: 72%;
+  background: #FFCC00;
+  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+}
+
+/* Círculo azul */
+.flag-blue {
+  position: absolute;
+  width: 36%;
+  height: 52%;
+  background: #002776;
+  border-radius: 50%;
+}
+
+/* Overlay de fogo — sobe da base */
+.flag-fire {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 70%;
+  background: linear-gradient(
+    0deg,
+    rgba(180, 30, 0, 0.95)   0%,
+    rgba(220, 80, 0, 0.85)   15%,
+    rgba(245, 130, 0, 0.65)  30%,
+    rgba(255, 180, 0, 0.35)  50%,
+    rgba(255, 220, 0, 0.12)  65%,
+    transparent              80%
+  );
+  animation: fire1 2.4s ease-in-out infinite;
+  mix-blend-mode: hard-light;
+}
+
+/* Segundo layer de fogo mais laranja */
+.flag-fire2 {
+  position: absolute;
+  bottom: 0; left: -5%; right: -5%;
+  height: 55%;
+  background: linear-gradient(
+    0deg,
+    rgba(150, 20, 0, 0.9)  0%,
+    rgba(200, 60, 0, 0.7)  20%,
+    rgba(240, 120, 0, 0.4) 45%,
+    transparent            70%
+  );
+  animation: fire2 1.8s ease-in-out infinite;
+  mix-blend-mode: screen;
+}
+
+/* Vinheta escurecedora sobre tudo */
+.flag-vignette {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at center, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.7) 100%),
+    linear-gradient(180deg, rgba(8,8,8,0.6) 0%, rgba(8,8,8,0) 30%, rgba(8,8,8,0) 60%, rgba(8,8,8,0.8) 100%);
+}
+
+/* Brasas */
+.ember {
+  position: absolute;
+  bottom: 10%;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #ff6600;
+  box-shadow: 0 0 6px #ff9900;
+  animation: ember 2.5s ease-out infinite;
+}
+.ember:nth-child(2) { left: 25%;  animation-delay: 0.6s;  width: 3px;  height: 3px;  background: #ffcc00; }
+.ember:nth-child(3) { left: 50%;  animation-delay: 1.2s;  width: 6px;  height: 6px;  background: #ff4400; }
+.ember:nth-child(4) { left: 70%;  animation-delay: 0.3s;  width: 4px;  height: 4px;  background: #ffaa00; }
+.ember:nth-child(5) { left: 40%;  animation-delay: 1.8s;  width: 3px;  height: 3px;  background: #ff8800; }
+.ember:nth-child(6) { left: 80%;  animation-delay: 0.9s;  width: 5px;  height: 5px;  background: #ffee00; }
+
