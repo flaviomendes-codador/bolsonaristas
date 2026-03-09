@@ -1,235 +1,170 @@
-@import '../styles/design-system.css';
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* ─── BASE ────────────────────────────────────────────── */
-* {
-  box-sizing: border-box;
+/* ── BASE ─────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+  scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-html {
-  scroll-behavior: smooth;
-  color-scheme: dark;
-}
-
 body {
-  background-color: #050805;
-  color: #e8ede8;
+  background: #080808;
+  color: #f5f5f5;
   font-family: 'Inter', system-ui, sans-serif;
-  min-height: 100vh;
-  overflow-x: hidden;
 }
 
-/* Scrollbar personalizada */
-::-webkit-scrollbar       { width: 6px; }
-::-webkit-scrollbar-track { background: #0a110a; }
-::-webkit-scrollbar-thumb { background: #1e5c1e; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #22863a; }
+::-webkit-scrollbar       { width: 4px; }
+::-webkit-scrollbar-track { background: #111; }
+::-webkit-scrollbar-thumb { background: #333; border-radius: 2px; }
 
-/* Seleção de texto */
-::selection {
-  background: rgba(34, 134, 58, 0.4);
-  color: #4ade80;
+::selection { background: rgba(220,38,38,0.3); color: #fff; }
+
+/* ── TIPOGRAFIA DISPLAY ──────────────────────────────── */
+.font-display {
+  font-family: 'Bebas Neue', Impact, sans-serif;
+  letter-spacing: 0.02em;
+  line-height: 0.9;
 }
 
-/* ─── BANDEIRA DO BRASIL — COMPONENTE CSS ──────────────── */
-.flag-container {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-
-/* Faixa verde */
-.flag-green {
-  background: #009c3b;
-  position: absolute;
-  inset: 0;
-}
-
-/* Losango amarelo */
-.flag-yellow {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) rotate(0deg);
-  width: 65%;
-  height: 65%;
-  background: #ffdf00;
-  clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
-}
-
-/* Círculo azul */
-.flag-blue {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 38%;
-  height: 57%;
-  background: #003580;
-  border-radius: 50%;
-}
-
-/* Overlay de fogo sobre a bandeira */
-.flag-fire-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    180deg,
-    transparent 0%,
-    transparent 30%,
-    rgba(249, 115, 22, 0.3) 60%,
-    rgba(220, 38, 38, 0.6) 80%,
-    rgba(153, 27, 27, 0.9) 100%
-  );
-  animation: fire-flicker 2s ease-in-out infinite;
-  mix-blend-mode: multiply;
-}
-
-/* ─── UTILITÁRIOS ─────────────────────────────────────── */
-
-.glass-card {
-  background: rgba(10, 17, 10, 0.85);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(34, 134, 58, 0.15);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.6);
-}
-
-.glass-card-gold {
-  background: rgba(10, 17, 10, 0.85);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(245, 158, 11, 0.25);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(245, 158, 11, 0.1);
-}
-
-.premium-card {
-  background: linear-gradient(135deg, rgba(26,58,26,0.5) 0%, rgba(10,17,10,0.95) 100%);
-  border: 2px solid rgba(34, 134, 58, 0.4);
-  box-shadow: 0 0 40px rgba(34, 134, 58, 0.15), 0 4px 24px rgba(0, 0, 0, 0.6);
-}
-
-/* Texto */
-.gold-text {
-  background: linear-gradient(90deg, #d97706, #fde68a, #f59e0b);
-  background-size: 200%;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: gradient-shift 3s ease infinite;
-}
-
-.fire-text {
-  background: linear-gradient(180deg, #fbbf24 0%, #f97316 50%, #dc2626 100%);
+/* ── GRADIENTES DE TEXTO ─────────────────────────────── */
+.text-gradient-red {
+  background: linear-gradient(135deg, #ef4444, #dc2626, #b91c1c);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-.verde-glow-text {
-  color: #4ade80;
-  text-shadow: 0 0 20px rgba(74, 222, 128, 0.5);
+.text-gradient-white {
+  background: linear-gradient(180deg, #ffffff 0%, #a1a1aa 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-.display-font {
-  font-family: 'Bebas Neue', 'Impact', sans-serif;
-  letter-spacing: 0.03em;
+.text-gradient-gold {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b, #d97706);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-/* Divisores */
-.divider-fire {
-  height: 1px;
-  background: linear-gradient(90deg, transparent, #f97316, #fbbf24, #f97316, transparent);
-  box-shadow: 0 0 8px rgba(249, 115, 22, 0.5);
+/* ── CARDS ───────────────────────────────────────────── */
+.card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
 }
 
-.divider-verde {
-  height: 1px;
-  background: linear-gradient(90deg, transparent, #22863a, #4ade80, #22863a, transparent);
-  box-shadow: 0 0 6px rgba(34, 134, 58, 0.4);
+.card-hover {
+  transition: all 200ms ease;
+}
+.card-hover:hover {
+  background: rgba(255,255,255,0.05);
+  border-color: rgba(255,255,255,0.12);
+  transform: translateY(-1px);
 }
 
-/* Score badge */
-.score-badge {
-  font-family: 'JetBrains Mono', monospace;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+.card-red {
+  background: rgba(220,38,38,0.06);
+  border: 1px solid rgba(220,38,38,0.15);
+  border-radius: 12px;
 }
 
-/* Noise texture overlay (atmosfera) */
-.noise-overlay::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 9999;
-  opacity: 0.03;
-}
-
-/* Hero background com textura */
-.hero-bg {
-  background:
-    radial-gradient(ellipse at 50% 0%, rgba(34, 134, 58, 0.12) 0%, transparent 60%),
-    radial-gradient(ellipse at 20% 50%, rgba(245, 158, 11, 0.05) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 50%, rgba(0, 53, 128, 0.05) 0%, transparent 50%),
-    linear-gradient(180deg, #050805 0%, #080d08 50%, #050805 100%);
-}
-
-/* Ticker de notícias */
-.ticker-wrap {
-  overflow: hidden;
-  white-space: nowrap;
-}
-.ticker-content {
+/* ── BOTÕES ──────────────────────────────────────────── */
+.btn {
   display: inline-flex;
-  gap: 4rem;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  transition: all 200ms ease;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.btn-red {
+  background: #dc2626;
+  color: #fff;
+  border: 1px solid #b91c1c;
+}
+.btn-red:hover {
+  background: #ef4444;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(220,38,38,0.35);
+}
+
+.btn-white {
+  background: #fff;
+  color: #080808;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.btn-white:hover {
+  background: #f5f5f5;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 24px rgba(255,255,255,0.1);
+}
+
+.btn-outline {
+  background: transparent;
+  color: rgba(255,255,255,0.6);
+  border: 1px solid rgba(255,255,255,0.12);
+}
+.btn-outline:hover {
+  color: #fff;
+  border-color: rgba(255,255,255,0.3);
+}
+
+/* ── INPUTS ──────────────────────────────────────────── */
+.input {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #fff;
+  border-radius: 8px;
+  padding: 12px 16px;
+  width: 100%;
+  font-size: 15px;
+  transition: all 200ms ease;
+  outline: none;
+}
+.input:focus {
+  border-color: rgba(220,38,38,0.6);
+  background: rgba(255,255,255,0.06);
+  box-shadow: 0 0 0 3px rgba(220,38,38,0.1);
+}
+.input::placeholder { color: rgba(255,255,255,0.2); }
+
+/* ── DIVISORES ───────────────────────────────────────── */
+.divider {
+  height: 1px;
+  background: rgba(255,255,255,0.06);
+}
+
+.divider-red {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(220,38,38,0.5), transparent);
+}
+
+/* ── TICKER ──────────────────────────────────────────── */
+.ticker-wrap { overflow: hidden; white-space: nowrap; }
+.ticker-inner {
+  display: inline-flex;
+  gap: 3rem;
   animation: ticker 40s linear infinite;
 }
-.ticker-content:hover { animation-play-state: paused; }
+.ticker-inner:hover { animation-play-state: paused; }
 
-@keyframes ticker {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); }
-}
+/* ── SCORE BADGE ─────────────────────────────────────── */
+.score-pos { color: #4ade80; font-variant-numeric: tabular-nums; }
+.score-neg { color: #f87171; font-variant-numeric: tabular-nums; }
+.score-neu { color: #71717a; font-variant-numeric: tabular-nums; }
 
-/* Ember particles */
-.ember {
-  position: absolute;
-  width: 4px;
-  height: 4px;
-  border-radius: 50%;
-  background: #f97316;
-  animation: ember-rise 3s ease-out infinite;
+/* ── BLUR PAYWALL ────────────────────────────────────── */
+.blur-paywall {
+  filter: blur(4px);
+  user-select: none;
+  pointer-events: none;
 }
-.ember:nth-child(2) { left: 30%; animation-delay: 0.8s; width: 3px; height: 3px; background: #fbbf24; }
-.ember:nth-child(3) { left: 60%; animation-delay: 1.6s; width: 5px; height: 5px; background: #dc2626; }
-.ember:nth-child(4) { left: 45%; animation-delay: 0.4s; width: 2px; height: 2px; background: #fde68a; }
-.ember:nth-child(5) { left: 75%; animation-delay: 2.1s; width: 4px; height: 4px; background: #f59e0b; }
-
-@keyframes ember-rise {
-  0%   { transform: translateY(0) translateX(0) scale(1);      opacity: 0.9; }
-  50%  { transform: translateY(-80px) translateX(15px) scale(0.6); opacity: 0.6; }
-  100% { transform: translateY(-160px) translateX(-10px) scale(0); opacity: 0; }
-}
-
-/* Urgência pulsante */
-.urgency-badge {
-  animation: pulse-red 1.5s ease-in-out infinite;
-}
-
-/* Input style */
-.input-dark {
-  background: rgba(10, 17, 10, 0.9);
-  border: 1px solid rgba(34, 134, 58, 0.3);
-  color: #e8ede8;
-  transition: all 250ms ease;
-}
-.input-dark:focus {
-  outline: none;
-  border-color: rgba(34, 134, 58, 0.7);
-  box-shadow: 0 0 0 3px rgba(34, 134, 58, 0.15);
-}
-.input-dark::placeholder { color: #4a5a4a; }
