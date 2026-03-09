@@ -1,0 +1,37 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #0a0f0a;
+  --foreground: #e8f5e9;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: 'Inter', system-ui, sans-serif;
+}
+
+@layer utilities {
+  .score-bar-positive {
+    background: linear-gradient(90deg, #22c55e, #16a34a);
+  }
+  .score-bar-negative {
+    background: linear-gradient(90deg, #dc2626, #991b1b);
+  }
+  .glass-card {
+    background: rgba(15, 26, 15, 0.8);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(34, 197, 94, 0.15);
+  }
+  .premium-gradient {
+    background: linear-gradient(135deg, #0a0f0a 0%, #0f1a0f 50%, #1a2e1a 100%);
+  }
+  .gold-text {
+    background: linear-gradient(90deg, #fbbf24, #f59e0b, #d97706);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+}
