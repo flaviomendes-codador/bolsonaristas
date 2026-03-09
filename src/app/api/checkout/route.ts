@@ -1,18 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { stripe, STRIPE_PRICE_ID, APP_URL } from '@/lib/stripe'
-import { supabase } from '@/lib/supabase'
-import { createClient } from '@supabase/supabase-js'
 
 export async function POST(request: NextRequest) {
-  // Verifica sessão do usuário
-  const supabaseServer = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!
-  )
-
-  const authHeader = request.headers.get('cookie') ?? ''
-
   try {
+    const { stripe, STRIPE_PRICE_ID, APP_URL } = await import('@/lib/stripe')
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
       payment_method_types: ['card'],

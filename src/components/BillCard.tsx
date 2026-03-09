@@ -1,84 +1,95 @@
 import { ScoreBar } from './ScoreBar'
 import type { Bill } from '@/lib/supabase'
 
-const CATEGORIA_ICONS: Record<string, string> = {
-  imposto: '💸',
-  familia: '👨‍👩‍👧‍👦',
-  liberdade: '🦅',
-  outro: '📄',
+const CATEGORIA_CONFIG: Record<string, { icon: string; label: string; color: string }> = {
+  imposto:   { icon: '💸', label: 'Tributação',        color: 'text-orange-400' },
+  familia:   { icon: '👨‍👩‍👧‍👦', label: 'Família & Valores', color: 'text-blue-400'   },
+  liberdade: { icon: '🦅', label: 'Liberdade',          color: 'text-verde-glow'  },
+  outro:     { icon: '📜', label: 'Legislação Geral',   color: 'text-gray-400'    },
 }
 
-const CATEGORIA_LABELS: Record<string, string> = {
-  imposto: 'Tributação',
-  familia: 'Família & Valores',
-  liberdade: 'Liberdade Individual',
-  outro: 'Geral',
+const SCORE_CONFIG = [
+  { min: 7,  label: 'EXCELENTE',   color: 'text-verde-glow',  bg: 'bg-verde-dim',  border: 'border-verde-base/30' },
+  { min: 3,  label: 'POSITIVO',    color: 'text-verde-bright', bg: 'bg-verde-dim', border: 'border-verde-muted/30' },
+  { min: -2, label: 'NEUTRO',      color: 'text-gray-400',     bg: 'bg-bg-overlay', border: 'border-gray-700/30' },
+  { min: -6, label: 'PREOCUPANTE', color: 'text-orange-400',  bg: 'bg-red-950/30', border: 'border-orange-900/30' },
+  { min: -11,label: 'PÉSSIMO',     color: 'text-red-400',     bg: 'bg-red-950/50', border: 'border-red-900/40' },
+]
+
+function getScoreConfig(score: number) {
+  return SCORE_CONFIG.find(c => score >= c.min) ?? SCORE_CONFIG[SCORE_CONFIG.length - 1]
 }
 
 interface BillCardProps {
   bill: Bill
   locked?: boolean
+  compact?: boolean
 }
 
-export function BillCard({ bill, locked = false }: BillCardProps) {
-  const isPositive = bill.score_ia >= 0
-  const scoreLabel = bill.score_ia >= 7
-    ? '✅ Excelente'
-    : bill.score_ia >= 3
-      ? '👍 Positivo'
-      : bill.score_ia >= -2
-        ? '⚠️ Neutro'
-        : bill.score_ia >= -6
-          ? '👎 Preocupante'
-          : '🚨 Péssimo'
-
+export function BillCard({ bill, locked = false, compact = false }: BillCardProps) {
+  const cfg = getScoreConfig(bill.score_ia ?? 0)
+  const cat = CATEGORIA_CONFIG[bill.categoria] ?? CATEGORIA_CONFIG.outro
   const data = new Date(bill.analisado_em).toLocaleDateString('pt-BR', {
     day: '2-digit', month: 'short'
   })
 
   return (
-    <div className={`glass-card rounded-xl p-5 transition-all hover:border-verde-500/20 ${locked ? 'relative overflow-hidden' : ''}`}>
+    <div className={`relative glass-card rounded-xl overflow-hidden transition-all duration-300 hover:translate-y-[-2px] ${cfg.border} border`}>
+      {/* Borda superior colorida */}
+      <div className={`h-0.5 w-full ${bill.score_ia >= 0 ? 'bg-gradient-to-r from-transparent via-verde-base to-transparent' : 'bg-gradient-to-r from-transparent via-red-600 to-transparent'}`} />
+
       {locked && (
-        <div className="absolute inset-0 rounded-xl bg-militar-900/85 backdrop-blur-sm z-10 flex items-center justify-center">
-          <div className="text-center">
-            <p className="text-dourado-400 font-semibold text-lg">🔒 Conteúdo Premium</p>
-            <p className="text-gray-400 text-sm mt-1">Assine para ver todos os PLs analisados</p>
+        <div className="absolute inset-0 rounded-xl bg-bg-base/90 backdrop-blur-md z-10 flex items-center justify-center">
+          <div className="text-center p-4">
+            <p className="text-gold-bright font-bold text-lg mb-1">🔒 Conteúdo Premium</p>
+            <p className="text-gray-500 text-sm">Assine para acessar todos os PLs</p>
           </div>
         </div>
       )}
 
-      <div className="flex items-start justify-between gap-3 mb-3">
-        <div className="flex-1">
-          <div className="flex items-center gap-2 mb-1">
-            <span className="text-lg">{CATEGORIA_ICONS[bill.categoria] || '📄'}</span>
-            <span className="text-xs text-gray-500 font-mono">{bill.numero}</span>
-            <span className="text-xs text-gray-600">·</span>
-            <span className="text-xs text-gray-600">{data}</span>
+      <div className={`p-${compact ? '4' : '5'}`}>
+        {/* Header */}
+        <div className="flex items-start gap-3 mb-3">
+          <span className="text-2xl shrink-0">{cat.icon}</span>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-2 flex-wrap mb-1">
+              <span className="font-mono text-xs text-gray-600">{bill.numero}</span>
+              <span className="text-gray-700">·</span>
+              <span className="text-xs text-gray-600">{data}</span>
+            </div>
+            <span className={`text-xs font-semibold uppercase tracking-wider ${cat.color}`}>
+              {cat.label}
+            </span>
           </div>
-          <span className="inline-block text-xs bg-militar-700 text-gray-400 px-2 py-0.5 rounded-full">
-            {CATEGORIA_LABELS[bill.categoria]}
-          </span>
+          <div className="text-right shrink-0">
+            <div className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-bold uppercase tracking-wide ${cfg.bg} ${cfg.color} border ${cfg.border}`}>
+              {cfg.label}
+            </div>
+            <p className={`score-badge text-2xl font-bold mt-1 ${cfg.color}`}>
+              {(bill.score_ia ?? 0) > 0 ? '+' : ''}{bill.score_ia?.toFixed(1)}
+            </p>
+          </div>
         </div>
-        <div className="text-right shrink-0">
-          <p className="text-xs text-gray-500">{scoreLabel}</p>
-          <p className={`text-2xl font-bold tabular-nums ${isPositive ? 'text-verde-400' : 'text-red-500'}`}>
-            {bill.score_ia > 0 ? '+' : ''}{bill.score_ia?.toFixed(1)}
+
+        {/* Score bar */}
+        <div className="mb-3">
+          <ScoreBar score={bill.score_ia ?? 0} size="xs" showLabel={false} />
+        </div>
+
+        {/* Análise da IA */}
+        <div className="bg-bg-surface/50 rounded-lg p-3 border border-verde-muted/20">
+          <p className="text-xs text-gold-bright font-semibold mb-1 flex items-center gap-1">
+            <span>🤖</span> Análise IA
           </p>
+          <p className="text-sm text-gray-300 leading-relaxed">{bill.resumo_ia}</p>
         </div>
+
+        {!compact && (
+          <p className="text-xs text-gray-700 mt-3 line-clamp-2 italic leading-relaxed">
+            {bill.ementa_oficial}
+          </p>
+        )}
       </div>
-
-      <div className="mb-3">
-        <ScoreBar score={bill.score_ia} size="md" showLabel={false} />
-      </div>
-
-      <p className="text-sm text-gray-300 leading-relaxed">
-        <span className="text-dourado-500 font-semibold">🤖 IA: </span>
-        {bill.resumo_ia}
-      </p>
-
-      <p className="text-xs text-gray-600 mt-3 line-clamp-2 italic">
-        {bill.ementa_oficial}
-      </p>
     </div>
   )
 }

@@ -84,7 +84,7 @@ async function main() {
     const { error, count: inserted } = await supabase
       .from('politicians')
       .upsert(rows, { onConflict: 'id' })
-      .select('id', { count: 'exact' })
+      .select('id')
 
     if (error) {
       console.error(`\n❌ Erro na página ${pagina}:`, error.message)
