@@ -1,11 +1,9 @@
-
-
 const nextConfig = {
+  output: 'export',
+  basePath: '/bolsonaristas',
+  trailingSlash: true,
   images: {
-    remotePatterns: [
-      { protocol: 'https', hostname: 'www.camara.leg.br' },
-      { protocol: 'https', hostname: '*.supabase.co' },
-    ],
+    unoptimized: true,
   },
 }
 
