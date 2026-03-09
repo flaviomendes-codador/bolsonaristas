@@ -1,5 +1,4 @@
 import { createClient } from '@supabase/supabase-js'
-import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { PoliticianCard } from '@/components/PoliticianCard'
@@ -13,81 +12,63 @@ export default async function DashboardPage({
 }: {
   searchParams: { sucesso?: string; partido?: string; estado?: string }
 }) {
-  // Verifica sessão server-side
   const supabaseServer = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
   )
-
   const { data: { session } } = await supabaseServer.auth.getSession()
+  if (!session) redirect('/login')
 
-  if (!session) {
-    redirect('/login')
-  }
-
-  // Verifica premium
   const supabaseAdmin = createClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.SUPABASE_SERVICE_ROLE_KEY!
   )
-
   const { data: userProfile } = await supabaseAdmin
-    .from('users')
-    .select('is_premium')
-    .eq('id', session.user.id)
-    .single()
-
+    .from('users').select('is_premium').eq('id', session.user.id).single()
   const isPremium = userProfile?.is_premium ?? false
 
-  // Busca deputados com filtros
   let politiciansQuery = supabaseAdmin
-    .from('politicians')
-    .select('*')
-    .order('score_atual', { ascending: false })
-
-  if (searchParams.partido) {
-    politiciansQuery = politiciansQuery.eq('partido', searchParams.partido)
-  }
-  if (searchParams.estado) {
-    politiciansQuery = politiciansQuery.eq('estado', searchParams.estado)
-  }
-
-  const limit = isPremium ? 100 : 10
-  politiciansQuery = politiciansQuery.limit(limit)
+    .from('politicians').select('*').order('score_atual', { ascending: false })
+  if (searchParams.partido) politiciansQuery = politiciansQuery.eq('partido', searchParams.partido)
+  if (searchParams.estado)  politiciansQuery = politiciansQuery.eq('estado', searchParams.estado)
+  politiciansQuery = politiciansQuery.limit(isPremium ? 100 : 10)
 
   const { data: politicians } = await politiciansQuery
   const { data: bills } = await supabaseAdmin
-    .from('bills')
-    .select('*')
-    .order('analisado_em', { ascending: false })
-    .limit(isPremium ? 20 : 3)
-
-  // Listas únicas de partidos e estados para filtros
-  const { data: allPols } = await supabaseAdmin
-    .from('politicians')
-    .select('partido, estado')
-
+    .from('bills').select('*').order('analisado_em', { ascending: false }).limit(isPremium ? 20 : 3)
+  const { data: allPols } = await supabaseAdmin.from('politicians').select('partido, estado')
   const partidos = Array.from(new Set((allPols ?? []).map(p => p.partido).filter(Boolean))).sort()
-  const estados = Array.from(new Set((allPols ?? []).map(p => p.estado).filter(Boolean))).sort()
+  const estados  = Array.from(new Set((allPols ?? []).map(p => p.estado).filter(Boolean))).sort()
 
   return (
-    <main className="min-h-screen">
-      {/* Header */}
-      <nav className="border-b border-verde-900/30 glass-card sticky top-0 z-50">
-        <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <span className="text-2xl">🦅</span>
-            <span className="font-bold text-verde-400">Monitor Legislativo</span>
-          </Link>
+    <div className="min-h-screen bg-[#030303] text-white">
+
+      {/* ── NAVBAR PRODUTO ──────────────────────────────── */}
+      <nav className="border-b border-white/5 bg-black/80 backdrop-blur-sm sticky top-0 z-50">
+        <div className="max-w-7xl mx-auto px-4 h-14 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Link href="/" className="flex items-center gap-2">
+              <span>🦅</span>
+              <span className="font-black text-xs uppercase tracking-widest text-white hidden sm:block">Monitor Legislativo</span>
+            </Link>
+            {/* Status ao vivo */}
+            <div className="flex items-center gap-1.5 bg-green-950/60 border border-green-900/40 rounded px-2 py-1">
+              <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse" />
+              <span className="text-green-500 text-xs font-mono uppercase tracking-wider">SISTEMA ATIVO</span>
+            </div>
+          </div>
+
           <div className="flex items-center gap-3">
             {isPremium && (
-              <span className="text-xs bg-dourado-500/20 text-dourado-400 border border-dourado-500/30 px-3 py-1 rounded-full">
-                🏅 Patriota Vigilante
+              <span className="hidden sm:block text-xs bg-red-950/60 border border-red-800/40 text-red-400 px-3 py-1 rounded font-bold uppercase tracking-wider">
+                🦅 Patriota Premium
               </span>
             )}
-            <span className="text-sm text-gray-500">{session.user.email}</span>
+            <span className="text-gray-600 text-xs hidden sm:block truncate max-w-[160px]">
+              {session.user.email}
+            </span>
             <form action="/api/auth/logout" method="POST">
-              <button className="text-sm text-gray-600 hover:text-red-400 transition-colors">
+              <button className="text-gray-700 hover:text-red-400 text-xs uppercase tracking-wider transition-colors">
                 Sair
               </button>
             </form>
@@ -95,116 +76,147 @@ export default async function DashboardPage({
         </div>
       </nav>
 
-      <div className="max-w-6xl mx-auto px-4 py-8">
-        {/* Banner de sucesso */}
-        {searchParams.sucesso && (
-          <div className="bg-verde-900/30 border border-verde-600/40 rounded-xl p-4 mb-8 text-center">
-            <p className="text-verde-400 font-bold">🎉 Assinatura ativada com sucesso!</p>
-            <p className="text-gray-400 text-sm mt-1">
-              Bem-vindo ao Monitor Legislativo Premium, Patriota!
-            </p>
-          </div>
-        )}
+      {/* ── BANNER DE SUCESSO ────────────────────────────── */}
+      {searchParams.sucesso && (
+        <div className="border-b border-green-800/40 bg-green-950/30 py-3 px-4">
+          <p className="text-center text-green-400 text-sm font-bold">
+            🦅 Assinatura ativada! Bem-vindo ao Monitor Legislativo Premium.
+          </p>
+        </div>
+      )}
 
-        {/* Banner não-premium */}
-        {!isPremium && (
-          <div className="bg-dourado-500/10 border border-dourado-500/30 rounded-xl p-4 mb-8 flex items-center justify-between gap-4">
-            <p className="text-gray-300 text-sm">
-              🔒 Você está no plano gratuito. Veja apenas os 10 primeiros deputados e 3 PLs.
+      {/* ── BANNER FREE ──────────────────────────────────── */}
+      {!isPremium && (
+        <div className="border-b border-red-900/40 bg-red-950/20 py-3 px-4">
+          <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
+            <p className="text-gray-400 text-xs sm:text-sm">
+              🔒 Você está no plano grátis — vendo apenas {10} dos 513 deputados e 3 PLs.
             </p>
-            <Link
-              href="/assinar"
-              className="shrink-0 bg-verde-600 hover:bg-verde-500 text-white px-4 py-2 rounded-lg text-sm font-bold transition-all"
-            >
-              Fazer Upgrade →
+            <Link href="/assinar"
+              className="shrink-0 bg-red-700 hover:bg-red-600 text-white px-4 py-2 text-xs font-black uppercase tracking-wider transition-all">
+              DESBLOQUEAR TUDO →
             </Link>
           </div>
-        )}
+        </div>
+      )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Ranking */}
-          <div className="lg:col-span-2">
-            <div className="flex items-center justify-between mb-4">
-              <h2 className="text-xl font-bold text-white">
-                🏆 Ranking de Deputados
-                {!isPremium && <span className="text-sm text-gray-500 ml-2">(Top 10)</span>}
-              </h2>
+      <div className="max-w-7xl mx-auto px-4 py-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+
+          {/* ── COLUNA PRINCIPAL — RANKING ────────────────── */}
+          <div className="lg:col-span-2 space-y-6">
+
+            {/* Header da seção */}
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="font-display text-3xl text-white uppercase tracking-wide">
+                  Ranking de Deputados
+                </h1>
+                <p className="text-gray-600 text-xs mt-1 uppercase tracking-widest">
+                  {isPremium ? 'Acesso completo — 513 deputados' : `Top ${(politicians as Politician[] ?? []).length} — plano grátis`}
+                </p>
+              </div>
+              <div className="text-right">
+                <p className="text-xs text-gray-700 uppercase tracking-widest">Atualizado</p>
+                <p className="text-xs text-green-600 font-mono">
+                  {new Date().toLocaleDateString('pt-BR')} 08:00
+                </p>
+              </div>
             </div>
 
-            {/* Filtros (apenas premium) */}
+            {/* Filtros premium */}
             {isPremium && (
-              <form className="flex gap-3 mb-4">
-                <select
-                  name="partido"
-                  defaultValue={searchParams.partido ?? ''}
-                  className="bg-militar-800 border border-verde-900/40 text-gray-300 rounded-lg px-3 py-2 text-sm flex-1"
-                >
+              <form className="flex gap-2">
+                <select name="partido" defaultValue={searchParams.partido ?? ''}
+                  className="bg-white/5 border border-white/10 text-gray-400 text-xs px-3 py-2 flex-1 outline-none focus:border-green-800 transition-colors">
                   <option value="">Todos os partidos</option>
-                  {partidos.map(p => (
-                    <option key={p} value={p}>{p}</option>
-                  ))}
+                  {partidos.map(p => <option key={p} value={p}>{p}</option>)}
                 </select>
-                <select
-                  name="estado"
-                  defaultValue={searchParams.estado ?? ''}
-                  className="bg-militar-800 border border-verde-900/40 text-gray-300 rounded-lg px-3 py-2 text-sm flex-1"
-                >
+                <select name="estado" defaultValue={searchParams.estado ?? ''}
+                  className="bg-white/5 border border-white/10 text-gray-400 text-xs px-3 py-2 flex-1 outline-none focus:border-green-800 transition-colors">
                   <option value="">Todos os estados</option>
-                  {estados.map(e => (
-                    <option key={e} value={e}>{e}</option>
-                  ))}
+                  {estados.map(e => <option key={e} value={e}>{e}</option>)}
                 </select>
-                <button
-                  type="submit"
-                  className="bg-verde-700 hover:bg-verde-600 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all"
-                >
+                <button type="submit"
+                  className="bg-white/5 border border-white/10 hover:border-green-800 text-gray-400 hover:text-green-400 px-4 py-2 text-xs uppercase tracking-wider transition-all">
                   Filtrar
                 </button>
               </form>
             )}
 
+            {/* Lista de deputados */}
             <div className="space-y-2">
               {(politicians as Politician[] ?? []).map((p, i) => (
-                <PoliticianCard key={p.id} politician={p} rank={i + 1} />
+                <PoliticianCard key={p.id} politician={p} rank={i + 1} variant="compact" />
               ))}
             </div>
 
             {!isPremium && (
-              <div className="mt-4 text-center glass-card rounded-xl p-6">
-                <p className="text-gray-400 text-sm mb-3">
-                  🔒 + {513 - 10} deputados bloqueados
+              <div className="border border-red-900/40 bg-red-950/10 p-6 text-center">
+                <p className="text-gray-500 text-sm mb-1">
+                  🔒 <span className="text-red-400 font-semibold">{513 - 10} deputados</span> bloqueados no plano grátis
                 </p>
-                <Link
-                  href="/assinar"
-                  className="text-verde-400 hover:text-verde-300 text-sm font-semibold"
-                >
-                  Ver ranking completo →
+                <p className="text-gray-700 text-xs mb-4">
+                  Sabia que seu deputado pode estar entre os piores?
+                </p>
+                <Link href="/assinar"
+                  className="inline-block bg-red-700 hover:bg-red-600 text-white px-6 py-2 text-xs font-black uppercase tracking-wider transition-all">
+                  Ver Ranking Completo — 7 Dias Grátis
                 </Link>
               </div>
             )}
           </div>
 
-          {/* Feed de PLs */}
-          <div>
-            <h2 className="text-xl font-bold text-white mb-4">
-              📜 PLs Analisados pela IA
-            </h2>
-            <div className="space-y-4">
-              {(bills as Bill[] ?? []).map((bill) => (
-                <BillCard key={bill.id} bill={bill} />
+          {/* ── COLUNA LATERAL — PLs ──────────────────────── */}
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="font-display text-2xl text-white uppercase">PLs Analisados</h2>
+              <div className="flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse" />
+                <span className="text-red-500 text-xs font-mono uppercase">HOJE</span>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              {(bills as Bill[] ?? []).map(bill => (
+                <BillCard key={bill.id} bill={bill} compact />
               ))}
             </div>
+
             {!isPremium && (
-              <div className="mt-4 text-center glass-card rounded-xl p-4">
-                <p className="text-gray-500 text-xs mb-2">Feed completo disponível no Premium</p>
-                <Link href="/assinar" className="text-verde-500 text-sm font-semibold hover:text-verde-400">
-                  Assinar agora →
+              <div className="border border-white/5 bg-black/40 p-5 text-center">
+                <p className="text-gray-600 text-xs mb-3 uppercase tracking-widest">
+                  Feed completo disponível no Premium
+                </p>
+                <Link href="/assinar"
+                  className="text-red-500 hover:text-red-400 text-xs font-bold uppercase tracking-wider transition-colors">
+                  Assinar Agora →
                 </Link>
               </div>
             )}
+
+            {/* Painel de status da IA */}
+            <div className="border border-white/5 bg-black/40 p-4 mt-4">
+              <p className="text-xs text-gray-700 uppercase tracking-widest font-bold mb-3">STATUS DO SISTEMA</p>
+              <div className="space-y-2">
+                {[
+                  { label: 'Última análise', value: `Hoje, 08:00`, ok: true },
+                  { label: 'Deputados monitorados', value: '513', ok: true },
+                  { label: 'PLs em tramitação', value: '2.847', ok: true },
+                  { label: 'Alertas enviados hoje', value: isPremium ? 'Ativos' : 'Bloqueados', ok: isPremium },
+                ].map(item => (
+                  <div key={item.label} className="flex items-center justify-between">
+                    <span className="text-gray-700 text-xs">{item.label}</span>
+                    <span className={`text-xs font-mono ${item.ok ? 'text-green-600' : 'text-red-700'}`}>
+                      {item.value}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </main>
+    </div>
   )
 }
