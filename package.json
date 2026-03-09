@@ -7,7 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "feeder": "bun run scripts/ai_feeder.ts"
+    "feeder": "bun run scripts/ai_feeder.ts",
+    "seed": "npx tsx scripts/seed_politicians.ts",
+    "test:prompt": "npx tsx scripts/test_pl_analysis.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.78.0",
