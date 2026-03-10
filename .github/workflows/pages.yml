@@ -29,6 +29,7 @@ jobs:
 
       - run: npm run build
         env:
+          BUILD_TARGET: static
           NEXT_PUBLIC_SUPABASE_URL: https://placeholder.supabase.co
           NEXT_PUBLIC_SUPABASE_ANON_KEY: placeholder-key
           NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: pk_test_placeholder
