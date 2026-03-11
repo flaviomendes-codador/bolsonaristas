@@ -152,7 +152,28 @@ export default function Page() {
       {/* ══ HERO ═════════════════════════════════════ */}
       <section className="relative hero-bg overflow-hidden"
         style={{ minHeight: '92svh', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', padding: 'clamp(48px,8vw,96px) 24px clamp(64px,10vw,120px)' }}>
-        <HeroBG />
+
+        {/* Background: bandeira BR em chamas */}
+        <div className="absolute inset-0 pointer-events-none" style={{ zIndex: 0 }}>
+          {/* Imagem */}
+          <div style={{
+            position: 'absolute', inset: 0,
+            backgroundImage: 'url(/hero-bg.png)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center 40%',
+            opacity: 0.35,
+          }} />
+          {/* Escurecimento topo — garante leitura do nav/headline */}
+          <div style={{
+            position: 'absolute', inset: 0,
+            background: 'linear-gradient(to bottom, #090909 0%, rgba(9,9,9,0.55) 30%, rgba(9,9,9,0.3) 55%, rgba(9,9,9,0.75) 85%, #090909 100%)',
+          }} />
+          {/* Glow vermelho sutil no centro para dar calor */}
+          <div style={{
+            position: 'absolute', inset: 0,
+            background: 'radial-gradient(ellipse 70% 50% at 50% 65%, rgba(200,30,0,0.18) 0%, transparent 70%)',
+          }} />
+        </div>
 
         <div className="relative w-full max-w-4xl mx-auto text-center" style={{ zIndex: 1 }}>
 
