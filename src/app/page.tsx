@@ -181,10 +181,12 @@ export default function Page() {
 
           {/* CTAs */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10, alignItems: 'center' }} className="sm:flex-row sm:justify-center">
-            <Link href="/captura" className="btn btn-primary w-full sm:w-auto"
+            <button
+              onClick={() => document.getElementById('cta-final')?.scrollIntoView({ behavior: 'smooth' })}
+              className="btn btn-primary w-full sm:w-auto"
               style={{ padding: 'clamp(13px,2vw,17px) clamp(24px,4vw,36px)', fontSize: 'clamp(14px,1.6vw,16px)', fontWeight: 700, borderRadius: 12 }}>
               Quero saber a verdade — grátis
-            </Link>
+            </button>
             <a href="#produto" className="btn btn-glass w-full sm:w-auto"
               style={{ padding: 'clamp(13px,2vw,17px) clamp(20px,3vw,28px)', fontSize: 14, borderRadius: 12 }}>
               Como funciona
@@ -446,7 +448,7 @@ export default function Page() {
       </section>
 
       {/* ══ CTA FINAL ════════════════════════════════ */}
-      <section className={S} style={{ padding: 'clamp(80px,12vw,140px) 24px', textAlign: 'center', background: 'radial-gradient(ellipse 70% 50% at 50% 100%, rgba(200,20,0,0.06) 0%, transparent 70%)' }}>
+      <section id="cta-final" className={S} style={{ padding: 'clamp(80px,12vw,140px) 24px', textAlign: 'center', background: 'radial-gradient(ellipse 70% 50% at 50% 100%, rgba(200,20,0,0.06) 0%, transparent 70%)' }}>
         <div className="max-w-3xl mx-auto">
           <h2 style={{ fontSize: 'clamp(2.4rem,7vw,5.5rem)', fontWeight: 900, letterSpacing: '-0.04em', lineHeight: 0.93, marginBottom: 24 }}>
             <span style={{ color: '#fff' }}>Você tem</span><br />

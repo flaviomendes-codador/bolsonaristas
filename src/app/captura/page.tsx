@@ -25,8 +25,13 @@ export default function CapturaPage() {
       email,
       options: { emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL}/obrigado` },
     })
-    if (error) setError(error.message)
-    else setDone(true)
+    if (error) {
+      if (error.message.toLowerCase().includes('rate limit') || error.status === 429) {
+        setError('Muitas tentativas com este email. Aguarde alguns minutos e tente novamente.')
+      } else {
+        setError('Erro ao enviar. Verifique o email e tente novamente.')
+      }
+    } else setDone(true)
     setLoading(false)
   }
 
@@ -103,7 +108,10 @@ export default function CapturaPage() {
                   </div>
                   {error && <p className="text-red-400 text-xs bg-red-950/40 border border-red-900/30 rounded px-3 py-2">{error}</p>}
                   <button type="submit" disabled={loading}
-                    className="btn btn-red w-full py-4 text-sm font-bold disabled:opacity-50">
+                    className="w-full py-4 text-sm font-bold disabled:opacity-50 rounded-lg transition-all"
+                    style={{ background: loading ? '#15803d' : '#16a34a', color: '#fff', border: 'none', cursor: loading ? 'not-allowed' : 'pointer' }}
+                    onMouseEnter={e => { if (!loading) (e.target as HTMLButtonElement).style.background = '#15803d' }}
+                    onMouseLeave={e => { if (!loading) (e.target as HTMLButtonElement).style.background = '#16a34a' }}>
                     {loading ? 'Enviando...' : '🦅 Quero os alertas gratuitamente →'}
                   </button>
                   <p className="text-zinc-700 text-xs text-center">Sem spam. Cancele quando quiser.</p>
